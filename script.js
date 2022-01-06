@@ -1,5 +1,6 @@
 class Calculator {
     constructor(previousDatatypeTextElement, currentDatatypeTextElement) {
+        //constructor function constructs aka creates the object
         this.previousDatatypeTextElement = previousDatatypeTextElement
         this.currentDatatypeTextElement = currentDatatypeTextElement
         this.clear()
@@ -33,13 +34,13 @@ class Calculator {
 
     compute() {
         let computation
-        const prev = parseFloat(this.previousDatatype)
+        const prev = parseFloat(this.previousDatatype) //takes interger value of whatever string is typed in and returns it
         const current = parseFloat(this.currentDatatype)
         if (isNaN(prev) || isNaN(current)) return
-        switch (this.operation) {
-            case '+':
+        switch (this.operation) { //switch can convert number, string, and boolean values
+            case '+'://below all of the things that could happen
                 computation = prev + current
-                break
+                break //helps come out of the switch case
             case '-':
                 computation = prev - current
                 break
@@ -49,7 +50,7 @@ class Calculator {
             case '÷':
                 computation = prev / current
                 break
-            default:
+            default: //in case wrong type of value input "works like 'else' in a switch statement"
                 return
         }
         this.currentDatatype = computation
@@ -94,6 +95,10 @@ const previousDatatypeTextElement = document.querySelector('[data-previous-datat
 const currentDatatypeTextElement = document.querySelector('[data-current-datatype]')
 
 const calculator = new Calculator(previousDatatypeTextElement, currentDatatypeTextElement)
+// the 'new' keyword
+// - creates a new empty object {}
+// - sets the value of 'this' to be the new empty object
+// - calls the constructor method
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
