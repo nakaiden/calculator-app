@@ -1,133 +1,76 @@
-class Calculator {
-    constructor(previousDatatypeTextElement, currentDatatypeTextElement) {
-        //constructor function constructs aka creates the object
-        this.previousDatatypeTextElement = previousDatatypeTextElement
-        this.currentDatatypeTextElement = currentDatatypeTextElement
-        this.clear()
-    }
-    
-    clear() {
-        this.currentDatatype = ''
-        this.previousDatatype = ''
-        this.operation = undefined
-    }
+const output = document.querySelector('.output');
+const numberButton = document.querySelectorAll('.number')
+const operationButton = document.querySelectorAll('.operator')
+const allClearButton = document.querySelector('.all-clear')
+const squareRoot = document.querySelector('.button')
+const delButton = document.querySelector('.delete')
+const equalButton = document.querySelector('.equals')
 
-    delete() {
-        this.currentDatatype = this.currentDatatype.toString().slice(0, -1)
-    }
-
-    appendNumber(number) {
-        if (number === '.' && this.currentDatatype.includes('.')) return
-        this.currentDatatype = this.currentDatatype.toString() + number.toString()
-    }
-
-    chooseOperation(operation) {
-        if (this.currentDatatype === '') return
-        if (this.previousDatatype !== '') {
-            this.compute()
-        }
-        this.operation = operation
-        this.previousDatatype = this.currentDatatype
-        this.currentDatatype = ''   
-    }
-
-
-    compute() {
-        let computation
-        const prev = parseFloat(this.previousDatatype) //takes interger value of whatever string is typed in and returns it
-        const current = parseFloat(this.currentDatatype)
-        if (isNaN(prev) || isNaN(current)) return
-        switch (this.operation) { //switch can convert number, string, and boolean values
-            case '+'://below all of the things that could happen
-                computation = prev + current
-                break //helps come out of the switch case
-            case '-':
-                computation = prev - current
-                break
-            case '*':
-                computation = prev * current
-                break
-            case '÷':
-                computation = prev / current
-                break
-            default: //in case wrong type of value input "works like 'else' in a switch statement"
-                return
-        }
-        this.currentDatatype = computation
-        this.operation = undefined
-        this.previousDatatype = ''
-    }
-
-    getDisplayNumber(number) {
-        const stringNumber = number.toString()
-        const intergerDigits = parseFloat(stringNumber.split('.')[0])
-        const decimalDigits = stringNumber.split('.')[1]
-        let intergerDisplay
-        if(isNaN(intergerDigits)) {
-            intergerDisplay = ''
-        } else {
-            intergerDisplay = intergerDigits.toLocaleString('en', {maximumFractionDigits: 0})
-        }
-        if(decimalDigits != null) {
-            return `${intergerDisplay}.${decimalDigits}`
-        } else {
-          return intergerDisplay  
-        }
-    }
-
-    updateDisplay() {
-        this.currentDatatypeTextElement.innerText = this.getDisplayNumber (this.currentDatatype)
-        if (this.operation != null) {
-            this.previousDatatypeTextElement.innerText = `${this.getDisplayNumber(this.previousDatatype)} ${this.operation}`       
-        } else {
-            this.previousDatatypeTextElement.innerText = ''
-        }
-    }
+//event listner for numbers
+for(let i = 0; i < numberButton.length; i++){
+    numberButton[i].addEventListener('click', () =>{
+        output.innerText += numberButton[i].innerText;
+    })
+}
+//event listner for operators
+for(let i = 0; i < operationButton.length; i++){
+    operationButton[i].addEventListener('click', () =>{
+        output.innerText += operationButton[i].innerText;
+    })
 }
 
+function deleteOnce(){
+    output.innerText = output.innerText.slice(0,-1)
+}
+delButton.addEventListener('click', deleteOnce);
 
-const numberButtons = document.querySelectorAll('[data-number]')
-const operationButtons = document.querySelectorAll('[data-operation]')
-const equalsButton = document.querySelector('[data-equals]')
-const deleteButton = document.querySelector('[data-delete]')
-const allClearButton = document.querySelector('[data-all-clear]')
-const previousDatatypeTextElement = document.querySelector('[data-previous-datatype]')
-const currentDatatypeTextElement = document.querySelector('[data-current-datatype]')
+function deleteAll(){
+    output.innerText = ''
+}
+allClearButton.addEventListener('click', deleteAll);
 
-const calculator = new Calculator(previousDatatypeTextElement, currentDatatypeTextElement)
-// the 'new' keyword
-// - creates a new empty object {}
-// - sets the value of 'this' to be the new empty object
-// - calls the constructor method
+function operations(equate){
+    let result = parseFloat(equate[0]);
+    for(let i = 0; i < equate.length; i++){
+        if(equate[i] === '÷'){
+            result = result / parseFloat(equate[i + 1]);
+        }else if(equate[i] === 'x'){
+            result = result * parseFloat(equate[i + 1]);
+        }else if(equate[i] === '+'){
+            result = result + parseFloat(equate[i + 1]);
+        }else if(equate[i] === '-'){
+            result = result - parseFloat(equate[i + 1]);
+        }else if(equate[i] === '√'){
+            result = Math.sqrt(equate[0]);
+        }
+    }output.innerText = result
+}
 
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.appendNumber(button.innerText)
-        calculator.updateDisplay()
-    })
-})
-
-operationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.chooseOperation(button.innerText)
-        calculator.updateDisplay()
-    })
-})
-
-equalsButton.addEventListener('click', button => {
-    calculator.compute()
-    calculator.updateDisplay()
-
-})
-
-allClearButton.addEventListener('click', button => {
-    calculator.clear()
-    calculator.updateDisplay()
-
-})
-
-deleteButton.addEventListener('click', button => {
-    calculator.delete()
-    calculator.updateDisplay()
-
-})
+function total(){
+    let strScreen = output.innerText;
+    let arr = [];
+    let build = '';
+    for(let i = 0; i < strScreen.length; i++){
+        if(strScreen[i] === '+'){
+            if(build) arr.push(build)
+            build = ''
+            arr.push('+')
+        }else if(strScreen[i] === '-'){
+            if(build) arr.push(build)
+            build = ''
+            arr.push('-')
+        }else if(strScreen[i] === '÷'){
+            if(build) arr.push(build)
+            build = ''
+            arr.push('÷')
+        }else if(strScreen[i]=== 'x'){
+            if(build) arr.push(build)
+            build = ''
+        }else{
+            build += strScreen[i]
+            if(i === strScreen.length -1) arr.push(build)
+        }
+    }
+    operations(arr)
+}
+equalButton.addEventListener('click', total);
