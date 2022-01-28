@@ -66,6 +66,11 @@ function total(){
         }else if(strScreen[i]=== 'x'){
             if(build) arr.push(build)
             build = ''
+            arr.push('*')
+        }else if(strScreen[i] === '√'){
+            if(build) arr.push(build)
+            build = ''
+            arr.push('√')
         }else{
             build += strScreen[i]
             if(i === strScreen.length -1) arr.push(build)
